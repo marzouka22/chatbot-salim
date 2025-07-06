@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🤖 salim marzouka</title>
+  <style>
+    body {
+      background: linear-gradient(to right, #667eea, #764ba2);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    #chatbox {
+      width: 100%;
+      max-width: 600px;
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    #messages {
+      height: 300px;
+      overflow-y: auto;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      background: #f9f9f9;
+    }
+    .message {
+      margin: 10px 0;
+    }
+    .user {
+      color: #1e40af;
+    }
+    .bot {
+      color: #059669;
+    }
+    #userInput {
+      width: 80%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 15px;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    button:hover {
+      background: #4338ca;
+    }
+  </style>
+</head>
+<body>
+  <div id="chatbox">
+    <h2>💬 salim marzouka</h2>
+    <div id="messages"></div>
+    <input type="text" id="userInput" placeholder="Écrivez un message..." onkeydown="if(event.key==='Enter') sendMessage()" />
+    <button onclick="sendMessage()">Envoyer</button>
+  </div>
+
+  <audio id="sendSound" src="https://www.soundjay.com/buttons/sounds/button-29.mp3"></audio>
+  <audio id="receiveSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
+
+  <script>
+    const messagesDiv = document.getElementById("messages");
+    const sendSound = document.getElementById("sendSound");
+    const receiveSound = document.getElementById("receiveSound");
+
+    // Load previous messages from localStorage
+    window.onload = () => {
+      const saved = localStorage.getItem("chat_history");
+      if (saved) {
+        messagesDiv.innerHTML = saved;
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
+    };
+
+    async function sendMessage() {
+      const userInput = document.getElementById("userInput");
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      messagesDiv.innerHTML += "<div class='message user'><b>Vous:</b> " + message + "</div>";
+      userInput.value = "";
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      sendSound.play();
+
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: message })
+      });
+
+      const data = await response.json();
+      if (data.reply) {
+        messagesDiv.innerHTML += "<div class='message bot'><b>Bot:</b> " + data.reply + "</div>";
+        receiveSound.play();
+      } else {
+        messagesDiv.innerHTML += "<div class='message bot'><b>Erreur:</b> " + data.error + "</div>";
+      }
+
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      localStorage.setItem("chat_history", messagesDiv.innerHTML);
+    }
+  </script>
+</body>
+</html>
