@@ -23,7 +23,7 @@ def chat():
     response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
     if response.status_code == 200:
         reply = response.json()['choices'][0]['message']['content']
-        return jsonify({"reply": reply})
+        return jsonify({"response": bot_reply})
     else:
         return jsonify({"error": response.text}), 500
 
