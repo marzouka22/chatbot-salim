@@ -2,92 +2,91 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Bot Salim Marzouka</title>
+    <title>Chatbot - Salim Marzouka</title>
     <style>
         body {
-            background: #f5f5fa;
-            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
             padding: 0;
-            margin: 0;
+            font-family: "Segoe UI", sans-serif;
+            background-color: #1e1e2f;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
-        h1 {
-            background: #4a90e2;
-            color: white;
+        header {
+            background-color: #343541;
             padding: 20px;
-            margin: 0;
             text-align: center;
-            font-size: 26px;
+            font-size: 20px;
+            font-weight: bold;
+            border-bottom: 1px solid #444;
         }
         #chatbox {
-            max-width: 800px;
-            margin: 30px auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            flex: 1;
+            overflow-y: auto;
             padding: 20px;
-            min-height: 300px;
         }
         .message {
-            margin-bottom: 10px;
+            margin: 15px 0;
+            display: flex;
         }
         .user {
-            text-align: right;
+            justify-content: flex-end;
         }
         .user .bubble {
-            display: inline-block;
-            background: #d1eaff;
-            color: black;
-            padding: 10px 15px;
-            border-radius: 20px;
+            background-color: #3b82f6;
+            color: #fff;
         }
         .bot {
-            text-align: left;
+            justify-content: flex-start;
         }
         .bot .bubble {
-            display: inline-block;
-            background: #e8e8e8;
-            color: black;
-            padding: 10px 15px;
-            border-radius: 20px;
+            background-color: #2a2b3a;
+            color: #e0e0e0;
+        }
+        .bubble {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 15px;
+            line-height: 1.5;
         }
         #inputForm {
             display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-        input[type="text"] {
             padding: 10px;
-            width: 70%;
-            border-radius: 20px;
-            border: 1px solid #ccc;
+            background-color: #343541;
+            border-top: 1px solid #444;
+        }
+        #userInput {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            margin-right: 10px;
         }
         button {
-            margin-left: 10px;
-            padding: 10px 20px;
-            border-radius: 20px;
-            background: #4a90e2;
+            background-color: #3b82f6;
             color: white;
             border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
         }
-        #actions {
-            text-align: center;
-            margin-top: 20px;
+        button:hover {
+            background-color: #2563eb;
         }
     </style>
 </head>
 <body>
-    <h1>🤖 Salim Marzouka AI Chatbot</h1>
+    <header>Salim Marzouka - Chatbot IA</header>
+
     <div id="chatbox"></div>
 
     <form id="inputForm">
-        <input type="text" id="userInput" placeholder="Écris ton message ici..." autocomplete="off">
+        <input type="text" id="userInput" placeholder="Tapez votre message..." autocomplete="off">
         <button type="submit">Envoyer</button>
     </form>
-
-    <div id="actions">
-        <button onclick="copyChat()">📋 Copier</button>
-        <button onclick="downloadChat()">⬇️ Télécharger</button>
-    </div>
 
     <script>
         const chatbox = document.getElementById('chatbox');
@@ -118,29 +117,9 @@
                 body: JSON.stringify({ message: userMessage })
             });
             const data = await response.json();
-            chatbox.lastChild.remove(); // remove loading
+            chatbox.lastChild.remove(); // Remove loading
             addMessage('bot', data.response);
         };
-
-        function copyChat() {
-            const messages = document.querySelectorAll('.bubble');
-            let text = '';
-            messages.forEach(m => text += m.innerText + '\n');
-            navigator.clipboard.writeText(text);
-            alert('La conversation a été copiée !');
-        }
-
-        function downloadChat() {
-            const messages = document.querySelectorAll('.bubble');
-            let text = '';
-            messages.forEach(m => text += m.innerText + '\n');
-            const blob = new Blob([text], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'chatbot_conversation.txt';
-            a.click();
-        }
     </script>
 </body>
 </html>
