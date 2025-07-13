@@ -2,103 +2,121 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Chatbot - Salim Marzouka</title>
+    <title>Assistant IA – Salim Marzouka</title>
     <style>
         body {
             margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", sans-serif;
-            background-color: #1e1e2f;
-            color: #ffffff;
+            font-family: "Helvetica Neue", sans-serif;
+            background-color: #f1f2f6;
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
+
         header {
-            background-color: #343541;
-            padding: 20px;
-            text-align: center;
+            background-color: #1f2937;
+            color: white;
+            padding: 20px 30px;
             font-size: 20px;
             font-weight: bold;
-            border-bottom: 1px solid #444;
+            border-bottom: 1px solid #ccc;
         }
+
         #chatbox {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 30px;
         }
+
         .message {
-            margin: 15px 0;
             display: flex;
+            margin-bottom: 15px;
         }
+
         .user {
             justify-content: flex-end;
         }
+
         .user .bubble {
-            background-color: #3b82f6;
-            color: #fff;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 15px 15px 0 15px;
+            text-align: right;
         }
+
         .bot {
             justify-content: flex-start;
         }
+
         .bot .bubble {
-            background-color: #2a2b3a;
-            color: #e0e0e0;
+            background-color: #e2e8f0;
+            color: #1a202c;
+            border-radius: 15px 15px 15px 0;
+            text-align: left;
         }
+
         .bubble {
+            padding: 14px 18px;
             max-width: 70%;
-            padding: 12px 18px;
-            border-radius: 15px;
-            line-height: 1.5;
+            font-size: 15px;
+            line-height: 1.6;
         }
-        #inputForm {
+
+        form {
             display: flex;
-            padding: 10px;
-            background-color: #343541;
-            border-top: 1px solid #444;
+            padding: 20px 30px;
+            border-top: 1px solid #ccc;
+            background-color: white;
         }
-        #userInput {
+
+        input[type="text"] {
             flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            border: none;
-            font-size: 16px;
-            margin-right: 10px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
         }
+
         button {
-            background-color: #3b82f6;
+            margin-left: 15px;
+            background-color: #2563eb;
             color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 15px;
             cursor: pointer;
         }
+
         button:hover {
-            background-color: #2563eb;
+            background-color: #1d4ed8;
         }
     </style>
 </head>
 <body>
-    <header>Salim Marzouka - Chatbot IA</header>
+
+    <header>🤖 Assistant IA – Salim Marzouka</header>
 
     <div id="chatbox"></div>
 
     <form id="inputForm">
-        <input type="text" id="userInput" placeholder="Tapez votre message..." autocomplete="off">
+        <input type="text" id="userInput" placeholder="Votre message..." autocomplete="off">
         <button type="submit">Envoyer</button>
     </form>
 
     <script>
-        const chatbox = document.getElementById('chatbox');
-        const form = document.getElementById('inputForm');
-        const input = document.getElementById('userInput');
+        const chatbox = document.getElementById("chatbox");
+        const form = document.getElementById("inputForm");
+        const input = document.getElementById("userInput");
 
         function addMessage(sender, text) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message ' + sender;
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
+            const messageDiv = document.createElement("div");
+            messageDiv.className = "message " + sender;
+
+            const bubble = document.createElement("div");
+            bubble.className = "bubble";
             bubble.innerText = text;
+
             messageDiv.appendChild(bubble);
             chatbox.appendChild(messageDiv);
             chatbox.scrollTop = chatbox.scrollHeight;
@@ -108,18 +126,21 @@
             e.preventDefault();
             const userMessage = input.value.trim();
             if (!userMessage) return;
-            addMessage('user', userMessage);
-            input.value = '';
-            addMessage('bot', '⏳...');
-            const response = await fetch('/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: userMessage })
+            addMessage("user", userMessage);
+            input.value = "";
+            addMessage("bot", "⏳ ...");
+
+            const response = await fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userMessage }),
             });
+
             const data = await response.json();
-            chatbox.lastChild.remove(); // Remove loading
-            addMessage('bot', data.response);
+            chatbox.lastChild.remove(); // remove loader
+            addMessage("bot", data.response);
         };
     </script>
+
 </body>
 </html>
